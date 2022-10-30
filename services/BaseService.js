@@ -5,12 +5,8 @@ class BaseService {
         this.model = model
     }
     async getAll(where) {
-        try {
-            var res = await this.model.findAll(where || {})
-            return new SuccessDataResult(res, Messages.LISTED())
-        } catch (error) {
-            return new ErrorResult(error.message)
-        }
+        var res = await this.model.findAll(where || {})
+        return new SuccessDataResult(res, Messages.LISTED())
     }
     async getAllPaginated(pageno, pagesize) {
         let offsetVal = (pageno - 1) * pagesize
@@ -19,18 +15,13 @@ class BaseService {
         return new SuccessDataResult(res, Messages.LISTED())
     }
     async add(data) {
-        console.log("data")
-        console.log(data)
         var res = await this.model.create(data)
-        console.log(res)
         return new SuccessDataResult(res, Messages.CREATED())
     }
 
     async update(data) {
         var res = await UserModel.update(data, {
-            where: {
-                id: data.id
-            }
+            where: { id: data.id }
         })
         return new SuccessDataResult(res, Messages.UPDATED())
     }
@@ -42,9 +33,7 @@ class BaseService {
     }
     delete(id) {
         var res = this.model.destroy({
-            where: {
-                id: id
-            }
+            where: { id: id }
         })
         return new SuccessDataResult(res, Messages.DELETED())
     }

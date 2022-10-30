@@ -3,12 +3,7 @@ const { sequelize } = require('../loaders/db');
 
 
 const UserModel = sequelize.define('user', {
-    // Model attributes are defined here
-    firstName: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    lastName: {
+    nickname:{
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -19,8 +14,12 @@ const UserModel = sequelize.define('user', {
     password: {
         type: DataTypes.STRING,
         allowNull: false
+    },
+    imagePath:{
+        type:DataTypes.TEXT,
+        allowNull:true,
     }
 }, { timestamps: true, tableName: 'users' }
 );
-UserModel.sync()
+//UserModel.sync()
 module.exports = UserModel

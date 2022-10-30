@@ -1,23 +1,18 @@
 const { DataTypes, Model } = require('sequelize');
 const { sequelize } = require('../loaders/db');
-
-const PostModel = sequelize.define("post", {
+const EntryModel = sequelize.define("entry", {
     title: {
         type: DataTypes.STRING,
         allowNull: false
     },
     description: {
-        type: DataTypes.STRING,
+        type: DataTypes.TEXT,
         allowNull: false
     },
     content: {
         type: DataTypes.TEXT,
         allowNull: true
     }
-}, { timestamps: true, tableName: 'posts' })
+}, { timestamps: true, tableName: 'entries' })
 
-
-
-
-
-module.exports = PostModel
+module.exports = EntryModel
