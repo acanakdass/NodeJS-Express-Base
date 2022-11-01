@@ -1,7 +1,7 @@
-const RedisService = require("../services/RedisService")
+const RedisService = require("../../services/RedisService")
 
 const CheckCacheMiddleware = async (req, res, next) => {
-    let reqUrl = req.originalUrl
+    let reqUrl = req.baseUrl
     let existsRes = await RedisService.IsExists(reqUrl)
     let isExists = existsRes == 1
     if (isExists) {
@@ -9,7 +9,6 @@ const CheckCacheMiddleware = async (req, res, next) => {
         let jsonRes = JSON.parse(cachedResponse)
         jsonRes.dataSource = 'cachee'
         res.json(jsonRes)
-        // next()
     } else {
         next()
     }

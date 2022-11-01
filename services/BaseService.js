@@ -1,11 +1,15 @@
 const Messages = require("../constants/Messages")
-const { ErrorResult, SuccessDataResult } = require("../helpers/results")
+const { SuccessDataResult } = require("../helpers/results")
+const RedisService = require("./RedisService")
 class BaseService {
     constructor(model) {
         this.model = model
     }
     async getAll(where) {
         var res = await this.model.findAll(where || {})
+        // let modelTableName = this.model.tableName
+        // await RedisService.SetStringKeyValueAsync(modelTableName, res)
+        // var cacheddata = await RedisService.GetStringValueByKeyAsync(modelTableName)
         return new SuccessDataResult(res, Messages.LISTED())
     }
     async getAllPaginated(pageno, pagesize) {
@@ -16,6 +20,9 @@ class BaseService {
     }
     async add(data) {
         var res = await this.model.create(data)
+        // let cachedData = await RedisService.GetStringValueByKeyAsync(this.model.tableName)
+        // cachedData.push(data)
+        // await RedisService.SetStringKeyValueAsync(this.model.tableName,cachedData)
         return new SuccessDataResult(res, Messages.CREATED())
     }
 
@@ -26,10 +33,9 @@ class BaseService {
         return new SuccessDataResult(res, Messages.UPDATED())
     }
 
-    getById(id) {
-        var res = this.model.findByPk(id)
+    async getById(id) {
+        var res = await this.model.findByPk(id)
         return new SuccessDataResult(res, Messages.LISTED())
-
     }
     delete(id) {
         var res = this.model.destroy({

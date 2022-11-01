@@ -1,15 +1,18 @@
 const httpStatus = require("http-status");
+const BusinessRulesBase = require("../businessRules/BusinessRulesBase");
 const Messages = require("../constants/Messages");
 const { ErrorResult, SuccessDataResult, SuccessResult } = require("../helpers/results");
+const RedisService = require("../services/RedisService");
 class BaseController {
     constructor(serviceType) {
         this.service = serviceType
+        this.BusinessRules = new BusinessRulesBase(serviceType)
     }
     add = async (req, res, next) => {
         try {
-            console.log(req.body)
             req.body.userId = req.user?.id ?? null
             const result = await this.service.add(req.body)
+            await RedisService.DeleteStringValueByKeyAsync(req.baseUrl)
             res.json(new SuccessDataResult(result, Messages.CREATED))
         } catch (error) {
             next(new ErrorResult(error.message))
@@ -20,6 +23,7 @@ class BaseController {
             const result = await this.service.getAll()
             res.locals.dataToCache = JSON.stringify(result)
             res.json(result)
+            next()
         } catch (error) {
             next(new ErrorResult(error.message))
         }
@@ -27,6 +31,7 @@ class BaseController {
     getById = async (req, res, next) => {
         try {
             let id = req.params.id
+            await this.BusinessRules.assureThatEntityExistsById(id)
             const result = await this.service.getById(id)
             res.json(result)
         } catch (error) {
@@ -36,10 +41,9 @@ class BaseController {
     update = async (req, res, next) => {
         try {
             let id = req.params?.id
-            if (!id) {
-                next(new ErrorResult("An id param is required!"))
-            }
+            await this.BusinessRules.assureThatEntityExistsById(req.params.id)
             const result = await this.service.update(id)
+            await RedisService.DeleteStringValueByKeyAsync(req.baseUrl)
             res.send(new SuccessDataResult(result, Messages.NOT_FOUND()))
         } catch (error) {
             next(new ErrorResult(error.message))
@@ -49,7 +53,9 @@ class BaseController {
     delete = async (req, res, next) => {
         try {
             let id = req.params?.id
+            await this.BusinessRules.assureThatEntityExistsById(req.params.id)
             const result = await this.service.delete(id)
+            await RedisService.DeleteStringValueByKeyAsync(req.baseUrl)
             res.json("Ok")
         } catch (error) {
             next(new ErrorResult(error.message))

@@ -1,9 +1,9 @@
 
 const AuthMiddleware = require('./AuthMiddleware')
 const GlobalExHandlerMiddleware = require('./GlobalExHandlerMiddleware')
-const CheckCacheMiddleware = require('./CheckCacheMiddleware')
+const CheckCacheMiddleware = require('./Caching/CheckCacheMiddleware')
 const RoutingMiddleware = require('./RoutingMiddleware')
-const SetCacheMiddleware = require('./SetCacheMiddleware')
+const SetCacheMiddleware = require('./Caching/SetCacheMiddleware')
 const ValidationMiddleware = require('./ValidationMiddleware')
 module.exports = {
     AuthMiddleware,
